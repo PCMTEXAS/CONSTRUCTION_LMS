@@ -1,6 +1,7 @@
 // Where early-access sign-ups are kept.
-// - Supabase table `waitlist` when SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are set
-//   (server-only secrets, set in Vercel by the owner; schema in supabase/migrations).
+// - Supabase table `waitlist` (project "constructionlms") when SUPABASE_URL and
+//   SUPABASE_PUBLISHABLE_KEY are set. The publishable key is public, not a secret:
+//   Row Level Security lets it INSERT only, never read (supabase/migrations/0001_waitlist.sql).
 // - Local development without them: one JSON line per entry in .data/waitlist.ndjson.
 // - Anywhere else without them: refuse, so no entry is silently lost.
 import { appendFile, mkdir } from "node:fs/promises";
@@ -20,13 +21,12 @@ export type SaveResult = { ok: true } | { ok: false; reason: "not_configured" | 
 
 export async function saveEntry(entry: WaitlistEntry): Promise<SaveResult> {
   const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const key = process.env.SUPABASE_PUBLISHABLE_KEY;
   if (url && key) {
     const res = await fetch(`${url}/rest/v1/waitlist`, {
       method: "POST",
       headers: {
         apikey: key,
-        Authorization: `Bearer ${key}`,
         "Content-Type": "application/json",
         Prefer: "return=minimal",
       },
