@@ -15,12 +15,22 @@ export const ORG = {
 export const SHOW_PLACEHOLDERS = !ALLOW_INDEXING;
 
 export const NAV = [
-  { label: "Free courses", href: "#courses" },
-  { label: "For teams", href: "#teams" },
-  { label: "For vendors", href: "#vendors" },
-  { label: "Community", href: "#community" },
-  { label: "FAQ", href: "#faq" },
+  { label: "Free courses", href: "/courses/" },
+  { label: "For teams", href: "/teams/" },
+  { label: "For vendors", href: "/vendors/" },
+  { label: "Community", href: "/community/" },
+  { label: "FAQ", href: "/#faq" },
 ];
+
+export const FOOTER_LINKS = [
+  { label: "About", href: "/about/" },
+  { label: "Contact", href: "/contact/" },
+  { label: "Privacy", href: "/privacy/" },
+  { label: "Terms", href: "/terms/" },
+];
+
+/** Pages listed in the sitemap. Privacy and Terms stay out until counsel approves them. */
+export const SITEMAP_PATHS = ["/", "/courses/", "/teams/", "/vendors/", "/community/", "/about/", "/contact/"];
 
 export type Role = "learner" | "employer" | "vendor";
 export const ROLES: { value: Role; label: string }[] = [

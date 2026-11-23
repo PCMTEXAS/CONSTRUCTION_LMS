@@ -2,11 +2,10 @@
 // hero -> proof bar -> problem -> how it works -> audiences (learners, teams, vendors)
 // -> courses -> community -> how pricing works -> FAQ -> final call to action.
 import type { Metadata } from "next";
-import { Logo, ProofSlot } from "@/components/Brand";
+import { ProofSlot } from "@/components/Brand";
 import { CoursePreview } from "@/components/CoursePreview";
-import { JoinForm } from "@/components/JoinForm";
-import { MobileNav } from "@/components/MobileNav";
-import { NAV, ORG, SITE_URL } from "@/lib/site";
+import { JoinSection } from "@/components/JoinSection";
+import { ORG, SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: { absolute: "Free construction training in English and Spanish | ConstructionLMS" },
@@ -57,27 +56,6 @@ const jsonLd = {
 export default function Home() {
   return (
     <>
-      <header className="site-header">
-        <div className="container">
-          <a href="/" className="home-link" aria-label="ConstructionLMS home">
-            <Logo />
-          </a>
-          <nav aria-label="Main" className="desktop-nav">
-            <ul>
-              {NAV.map((n) => (
-                <li key={n.href}><a href={n.href}>{n.label}</a></li>
-              ))}
-            </ul>
-          </nav>
-          <div className="header-actions">
-            <a className="btn btn-primary btn-sm header-cta" href="#join" data-role="learner" data-cta-event="join" data-cta-location="header">
-              Get free access
-            </a>
-            <MobileNav />
-          </div>
-        </div>
-      </header>
-
       <main id="main">
         {/* HERO */}
         <section className="hero">
@@ -156,7 +134,7 @@ export default function Home() {
             <div className="section-head">
               <p className="eyebrow">Free course library</p>
               <h2>Start with what keeps people safe and productive.</h2>
-              <p className="muted">The launch library is in development. These are the first topics.</p>
+              <p className="muted">The launch library is in development. These are the first topics. <a href="/courses/">More about the courses</a>.</p>
             </div>
             <ul className="topics">
               <li><h3>Safety basics</h3><p>Falls, ladders, PPE, electrical and struck-by hazards.</p></li>
@@ -182,6 +160,7 @@ export default function Home() {
                 <a className="btn btn-secondary" href="#join" data-role="employer" data-cta-event="join_employer" data-cta-location="teams">
                   Talk to us about team plans
                 </a>
+                <a className="btn-link" href="/teams/">How team plans will work</a>
               </div>
             </div>
             <div className="aside-stack">
@@ -203,6 +182,7 @@ export default function Home() {
                 <a className="btn btn-secondary" href="#join" data-role="vendor" data-cta-event="join_vendor" data-cta-location="vendors">
                   Talk to us about vendor spaces
                 </a>
+                <a className="btn-link" href="/vendors/">How vendor spaces will work</a>
               </div>
             </div>
             <div className="aside-stack">
@@ -221,6 +201,7 @@ export default function Home() {
                 A moderated community organized by trade and role, with questions linked to each lesson and regular live
                 sessions with experienced practitioners.
               </p>
+              <p><a className="on-dark-link" href="/community/">How the community will work</a></p>
             </div>
             <ul className="chips" aria-label="First community spaces (planned)">
               <li className="chip">Superintendents</li>
@@ -275,33 +256,8 @@ export default function Home() {
           </div>
         </section>
 
-        {/* FINAL CTA */}
-        <section className="closing" id="join">
-          <div className="container split">
-            <div>
-              <h2>Be first in when the courses open.</h2>
-              <p>Tell us who you are and we&rsquo;ll send what matters to you: new courses, team plans or vendor spaces.</p>
-              <ul className="next-steps">
-                <li>1. Join the list (30 seconds).</li>
-                <li>2. Get an email when the first courses open.</li>
-                <li>3. Sign up free and start learning.</li>
-              </ul>
-              <ProofSlot inline label="one-line quote plus security and privacy badges." />
-            </div>
-            <JoinForm />
-          </div>
-        </section>
+        <JoinSection source="home" />
       </main>
-
-      <footer className="site-footer">
-        <div className="container footer-row">
-          <Logo onDark />
-          <p>
-            Powered by <a href={ORG.poweredBy.url} rel="noopener">{ORG.poweredBy.name}</a>
-          </p>
-          <p className="fine">© {new Date().getFullYear()} ConstructionLMS</p>
-        </div>
-      </footer>
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
     </>

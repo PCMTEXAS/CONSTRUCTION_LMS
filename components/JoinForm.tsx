@@ -8,9 +8,9 @@ type Status = "idle" | "sending" | "done" | "error";
 const track = (event: string, params: Record<string, string> = {}) =>
   (window as unknown as { gtag?: (...a: unknown[]) => void }).gtag?.("event", event, params);
 
-export function JoinForm() {
+export function JoinForm({ source = "home", defaultRole = "learner" }: { source?: string; defaultRole?: Role }) {
   const uid = useId();
-  const [role, setRole] = useState<Role>("learner");
+  const [role, setRole] = useState<Role>(defaultRole);
   const [status, setStatus] = useState<Status>("idle");
   const [emailError, setEmailError] = useState("");
   const started = useRef(false);
@@ -52,7 +52,7 @@ export function JoinForm() {
       const res = await fetch("/api/waitlist/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data, role, locale: "en", source: "home" }),
+        body: JSON.stringify({ ...data, role, locale: "en", source }),
       });
       if (!res.ok) throw new Error(String(res.status));
       track("form_submit", { form: "join", role });
