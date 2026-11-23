@@ -2,13 +2,17 @@
 // Early-access form. Few fields: email and role are required; name and company are optional.
 // Role can be preset by links such as href="?role=employer#join".
 import { useEffect, useId, useRef, useState } from "react";
+import { t, type Locale } from "@/lib/i18n";
 import { ROLES, type Role } from "@/lib/site";
 
 type Status = "idle" | "sending" | "done" | "error";
 const track = (event: string, params: Record<string, string> = {}) =>
   (window as unknown as { gtag?: (...a: unknown[]) => void }).gtag?.("event", event, params);
 
-export function JoinForm({ source = "home", defaultRole = "learner" }: { source?: string; defaultRole?: Role }) {
+type Props = { locale?: Locale; source?: string; defaultRole?: Role };
+
+export function JoinForm({ locale = "en", source = "home", defaultRole = "learner" }: Props) {
+  const f = t(locale).form;
   const uid = useId();
   const [role, setRole] = useState<Role>(defaultRole);
   const [status, setStatus] = useState<Status>("idle");
@@ -18,11 +22,11 @@ export function JoinForm({ source = "home", defaultRole = "learner" }: { source?
 
   useEffect(() => {
     const preset = new URLSearchParams(window.location.search).get("role");
-    if (ROLES.some((r) => r.value === preset)) setRole(preset as Role);
+    if (ROLES.includes(preset as Role)) setRole(preset as Role);
     // Links with data-role preset the role without a page reload.
     const onClick = (e: MouseEvent) => {
       const el = (e.target as HTMLElement | null)?.closest<HTMLElement>("[data-role]");
-      if (el?.dataset.role && ROLES.some((x) => x.value === el.dataset.role)) setRole(el.dataset.role as Role);
+      if (el?.dataset.role && ROLES.includes(el.dataset.role as Role)) setRole(el.dataset.role as Role);
     };
     document.addEventListener("click", onClick);
     return () => document.removeEventListener("click", onClick);
@@ -42,7 +46,7 @@ export function JoinForm({ source = "home", defaultRole = "learner" }: { source?
     e.preventDefault();
     const data = Object.fromEntries(new FormData(e.currentTarget)) as Record<string, string>;
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(data.email ?? "")) {
-      setEmailError("Enter an email address like name@company.com.");
+      setEmailError(f.emailError);
       e.currentTarget.querySelector<HTMLInputElement>("input[name=email]")?.focus();
       return;
     }
@@ -52,7 +56,7 @@ export function JoinForm({ source = "home", defaultRole = "learner" }: { source?
       const res = await fetch("/api/waitlist/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data, role, locale: "en", source }),
+        body: JSON.stringify({ ...data, role, locale, source }),
       });
       if (!res.ok) throw new Error(String(res.status));
       track("form_submit", { form: "join", role });
@@ -65,11 +69,11 @@ export function JoinForm({ source = "home", defaultRole = "learner" }: { source?
   if (status === "done") {
     return (
       <div className="form-card done" ref={doneRef} tabIndex={-1} role="status">
-        <h3>You&rsquo;re on the list.</h3>
+        <h3>{f.doneTitle}</h3>
         <p>
-          We&rsquo;ll email you when the first courses open.
-          {role === "employer" ? " We'll also send team-plan details as soon as they're ready." : null}
-          {role === "vendor" ? " Someone from our partnerships team will contact you about vendor spaces." : null}
+          {f.done}
+          {role === "employer" ? f.doneEmployer : null}
+          {role === "vendor" ? f.doneVendor : null}
         </p>
       </div>
     );
@@ -77,19 +81,19 @@ export function JoinForm({ source = "home", defaultRole = "learner" }: { source?
 
   return (
     <form className="form-card" onSubmit={onSubmit} onInput={onFirstInput} noValidate aria-describedby={`${uid}-req`}>
-      <p id={`${uid}-req`} className="fine">Fields marked * are required.</p>
+      <p id={`${uid}-req`} className="fine">{f.required}</p>
 
       <fieldset>
-        <legend>Which describes you? *</legend>
+        <legend>{f.which}</legend>
         {ROLES.map((r) => (
-          <label key={r.value} className="radio">
-            <input type="radio" name="role" value={r.value} checked={role === r.value} onChange={() => setRole(r.value)} />
-            {r.label}
+          <label key={r} className="radio">
+            <input type="radio" name="role" value={r} checked={role === r} onChange={() => setRole(r)} />
+            {f.roles[r]}
           </label>
         ))}
       </fieldset>
 
-      <label htmlFor={`${uid}-email`}>Work or personal email *</label>
+      <label htmlFor={`${uid}-email`}>{f.email}</label>
       <input
         id={`${uid}-email`}
         name="email"
@@ -102,12 +106,12 @@ export function JoinForm({ source = "home", defaultRole = "learner" }: { source?
       />
       {emailError ? <p id={`${uid}-email-err`} className="field-error">{emailError}</p> : null}
 
-      <label htmlFor={`${uid}-name`}>Your name</label>
+      <label htmlFor={`${uid}-name`}>{f.name}</label>
       <input id={`${uid}-name`} name="name" type="text" autoComplete="name" />
 
       {role !== "learner" ? (
         <>
-          <label htmlFor={`${uid}-company`}>Company</label>
+          <label htmlFor={`${uid}-company`}>{f.company}</label>
           <input id={`${uid}-company`} name="company" type="text" autoComplete="organization" />
         </>
       ) : null}
@@ -119,12 +123,12 @@ export function JoinForm({ source = "home", defaultRole = "learner" }: { source?
       </div>
 
       <button className="btn btn-primary" type="submit" disabled={status === "sending"}>
-        {status === "sending" ? "Saving…" : "Get free early access"}
+        {status === "sending" ? f.sending : f.submit}
       </button>
       {status === "error" ? (
-        <p className="field-error" role="alert">Something went wrong and your details were not saved. Please try again.</p>
+        <p className="field-error" role="alert">{f.error}</p>
       ) : null}
-      <p className="fine">We use your email only to tell you about ConstructionLMS. No spam, and you can unsubscribe at any time.</p>
+      <p className="fine">{f.fine}</p>
     </form>
   );
 }
