@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { Logo, ProofSlot } from "@/components/Brand";
 import { CoursePreview } from "@/components/CoursePreview";
 import { JoinForm } from "@/components/JoinForm";
+import { MobileNav } from "@/components/MobileNav";
 import { NAV, ORG, SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -69,9 +70,10 @@ export default function Home() {
             </ul>
           </nav>
           <div className="header-actions">
-            <a className="btn btn-primary btn-sm" href="#join" data-role="learner" data-cta-event="join" data-cta-location="header">
+            <a className="btn btn-primary btn-sm header-cta" href="#join" data-role="learner" data-cta-event="join" data-cta-location="header">
               Get free access
             </a>
+            <MobileNav />
           </div>
         </div>
       </header>
