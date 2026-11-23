@@ -103,6 +103,15 @@ a { color: var(--steel); }
 @media (max-width: 559px) { .header-cta { display: none; } .mobile-menu-cta { display: block; } }
 
 /* Hero */
+/* Inner pages */
+.page-hero { padding: var(--sp-8) 0 var(--sp-7); }
+.page-hero .narrow > h2 { margin-top: var(--sp-6); }
+.narrow h2 + p, .narrow p + h2 { margin-top: var(--sp-4); }
+.on-dark-link { color: var(--amber); font-weight: 700; text-underline-offset: 4px; }
+.draft-note { border: 2px dashed var(--danger); border-radius: var(--radius); padding: var(--sp-3) var(--sp-4); color: var(--danger); background: #fdf3f3; }
+.footer-links { display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-5); list-style: none; margin: 0; padding: 0; }
+.footer-links a { display: inline-flex; align-items: center; min-height: var(--tap); }
+
 .hero { padding: var(--sp-8) 0 var(--sp-8); background: linear-gradient(180deg, var(--white) 0%, var(--white) 70%, var(--tint) 100%); }
 .split { display: grid; gap: var(--sp-7); align-items: center; }
 @media (min-width: 960px) { .split { grid-template-columns: 1.05fr 1fr; gap: var(--sp-8); } }
