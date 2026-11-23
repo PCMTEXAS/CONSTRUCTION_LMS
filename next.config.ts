@@ -4,6 +4,8 @@ const ALLOW_INDEXING = process.env.NEXT_PUBLIC_ALLOW_INDEXING === "true";
 
 const config: NextConfig = {
   trailingSlash: true,
+  // Two root layouts (app/(en), app/(es)) need one global 404: app/global-not-found.tsx.
+  experimental: { globalNotFound: true },
   // Preview builds: tell search engines not to index anything, on every response.
   async headers() {
     const security = [

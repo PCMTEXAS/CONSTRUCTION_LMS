@@ -1,21 +1,25 @@
 // Site footer, shared by every page.
 import { Logo } from "@/components/Brand";
-import { FOOTER_LINKS, ORG } from "@/lib/site";
+import { LangSwitch } from "@/components/LangSwitch";
+import { PAGES, t, type Locale } from "@/lib/i18n";
+import { ORG } from "@/lib/site";
 
-export function SiteFooter() {
+export function SiteFooter({ locale }: { locale: Locale }) {
+  const s = t(locale);
   return (
     <footer className="site-footer">
       <div className="container footer-row">
         <Logo onDark />
-        <nav aria-label="Footer">
+        <nav aria-label={s.footerNav}>
           <ul className="footer-links">
-            {FOOTER_LINKS.map((l) => (
-              <li key={l.href}><a href={l.href}>{l.label}</a></li>
+            {s.footer.map((l) => (
+              <li key={l.key}><a href={PAGES[l.key][locale]}>{l.label}</a></li>
             ))}
+            <li><LangSwitch /></li>
           </ul>
         </nav>
         <p>
-          Powered by <a href={ORG.poweredBy.url} rel="noopener">{ORG.poweredBy.name}</a>
+          {s.poweredBy} <a href={ORG.poweredBy.url} rel="noopener">{ORG.poweredBy.name}</a>
         </p>
         <p className="fine">© {new Date().getFullYear()} ConstructionLMS</p>
       </div>

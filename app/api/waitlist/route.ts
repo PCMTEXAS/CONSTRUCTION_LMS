@@ -18,14 +18,14 @@ export async function POST(req: Request) {
   const email = clean(body.email, 254).toLowerCase();
   const role = clean(body.role, 20) as Role;
   if (!EMAIL.test(email)) return NextResponse.json({ error: "email" }, { status: 422 });
-  if (!ROLES.some((r) => r.value === role)) return NextResponse.json({ error: "role" }, { status: 422 });
+  if (!ROLES.includes(role)) return NextResponse.json({ error: "role" }, { status: 422 });
 
   const result = await saveEntry({
     email,
     role,
     name: clean(body.name, 120) || null,
     company: clean(body.company, 160) || null,
-    locale: clean(body.locale, 5) || "en",
+    locale: clean(body.locale, 5) === "es" ? "es" : "en",
     source: clean(body.source, 40) || "home",
   });
   if (!result.ok) return NextResponse.json({ error: result.reason }, { status: 503 });

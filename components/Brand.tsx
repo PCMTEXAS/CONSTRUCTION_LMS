@@ -1,5 +1,6 @@
 // Wordmark: an amber "beam" mark plus the name in live text (crisp, translatable, no image request).
-// Proposed for owner approval, 23 Nov 2026.
+// Approved by the owner, 23 Nov 2026, as ConstructionLMS's own identity.
+import { t, type Locale } from "@/lib/i18n";
 import { SHOW_PLACEHOLDERS } from "@/lib/site";
 export function Logo({ onDark = false }: { onDark?: boolean }) {
   return (
@@ -17,11 +18,11 @@ export function Logo({ onDark = false }: { onDark?: boolean }) {
 }
 
 /** A clearly marked slot for proof we do not have yet. Never rendered once indexing is on. */
-export function ProofSlot({ label, inline = false }: { label: string; inline?: boolean }) {
+export function ProofSlot({ label, inline = false, locale = "en" }: { label: string; inline?: boolean; locale?: Locale }) {
   if (!SHOW_PLACEHOLDERS) return null;
   return (
     <div className={`proof-slot${inline ? " inline" : ""}`} role="note">
-      <strong>Placeholder, not real proof:</strong> {label}
+      <strong>{t(locale).placeholder}</strong> {label}
     </div>
   );
 }

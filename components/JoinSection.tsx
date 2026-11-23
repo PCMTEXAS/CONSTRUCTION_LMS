@@ -1,30 +1,25 @@
 // Closing sign-up section. Every page ends with it, so "#join" works site-wide.
 import { ProofSlot } from "@/components/Brand";
 import { JoinForm } from "@/components/JoinForm";
+import { t, type Locale } from "@/lib/i18n";
 import type { Role } from "@/lib/site";
 
-type Props = { source: string; role?: Role; heading?: string; intro?: string };
+type Props = { locale: Locale; source: string; role?: Role; heading?: string; intro?: string };
 
-export function JoinSection({
-  source,
-  role = "learner",
-  heading = "Be first in when the courses open.",
-  intro = "Tell us who you are and we’ll send what matters to you: new courses, team plans or vendor spaces.",
-}: Props) {
+export function JoinSection({ locale, source, role = "learner", heading, intro }: Props) {
+  const j = t(locale).join;
   return (
     <section className="closing" id="join">
       <div className="container split">
         <div>
-          <h2>{heading}</h2>
-          <p>{intro}</p>
+          <h2>{heading ?? j.heading}</h2>
+          <p>{intro ?? j.intro}</p>
           <ul className="next-steps">
-            <li>1. Join the list (30 seconds).</li>
-            <li>2. Get an email when the first courses open.</li>
-            <li>3. Sign up free and start learning.</li>
+            {j.steps.map((step) => <li key={step}>{step}</li>)}
           </ul>
-          <ProofSlot inline label="one-line quote plus security and privacy badges." />
+          <ProofSlot inline locale={locale} label={j.proof} />
         </div>
-        <JoinForm source={source} defaultRole={role} />
+        <JoinForm locale={locale} source={source} defaultRole={role} />
       </div>
     </section>
   );

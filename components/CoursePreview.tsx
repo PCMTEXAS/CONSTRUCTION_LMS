@@ -2,6 +2,7 @@
 // Hero visual: an illustrative lesson card built in HTML/CSS (no image request, fast LCP).
 // The EN/ES switch works, to show that every course comes in both languages.
 import { useState } from "react";
+import { t, type Locale } from "@/lib/i18n";
 
 const TEXT = {
   en: {
@@ -22,16 +23,17 @@ const TEXT = {
   },
 } as const;
 
-export function CoursePreview() {
-  const [lang, setLang] = useState<"en" | "es">("en");
+export function CoursePreview({ locale = "en" }: { locale?: Locale }) {
+  const ui = t(locale).preview;
+  const [lang, setLang] = useState<Locale>(locale);
   const s = TEXT[lang];
   return (
-    <figure className="preview" aria-label="Illustrative course preview">
+    <figure className="preview" aria-label={ui.label}>
       <div className="preview-stage">
       <div className="preview-card" lang={lang}>
         <div className="preview-top">
           <span className="preview-tag">{s.tag}</span>
-          <div className="lang-toggle" role="group" aria-label="Course language">
+          <div className="lang-toggle" role="group" aria-label={ui.langGroup}>
             <button type="button" aria-pressed={lang === "en"} onClick={() => setLang("en")}>EN</button>
             <button type="button" aria-pressed={lang === "es"} onClick={() => setLang("es")} lang="es">ES</button>
           </div>
@@ -56,7 +58,7 @@ export function CoursePreview() {
         </span>
       </div>
       </div>
-      <figcaption>Illustration of a lesson. The course library is in development.</figcaption>
+      <figcaption>{ui.caption}</figcaption>
     </figure>
   );
 }

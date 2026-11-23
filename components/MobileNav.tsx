@@ -1,12 +1,15 @@
 "use client";
-// Phone and tablet menu (under 1000px, where the desktop links are hidden).
+// Phone and tablet menu (under 1200px, where the desktop links are hidden).
 // A labelled "Menu" button opens a panel with the same links as the desktop nav.
 // Closes on a link tap, Escape (focus returns to the button) or a tap outside.
 // On phones (under 560px) the header's "Get free access" button moves into this panel.
 import { useEffect, useRef, useState } from "react";
-import { NAV } from "@/lib/site";
+import { LangSwitch } from "@/components/LangSwitch";
+import type { NavItem } from "@/components/nav";
 
-export function MobileNav() {
+type Props = { items: NavItem[]; menuLabel: string; navLabel: string; ctaLabel: string };
+
+export function MobileNav({ items, menuLabel, navLabel, ctaLabel }: Props) {
   const [open, setOpen] = useState(false);
   const wrap = useRef<HTMLDivElement>(null);
   const button = useRef<HTMLButtonElement>(null);
@@ -47,11 +50,11 @@ export function MobileNav() {
             <path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
           )}
         </svg>
-        Menu
+        {menuLabel}
       </button>
-      <nav id="mobile-menu" aria-label="Main" className="mobile-menu" hidden={!open}>
+      <nav id="mobile-menu" aria-label={navLabel} className="mobile-menu" hidden={!open}>
         <ul>
-          {NAV.map((n) => (
+          {items.map((n) => (
             <li key={n.href}>
               <a href={n.href} onClick={() => setOpen(false)}>{n.label}</a>
             </li>
@@ -59,8 +62,11 @@ export function MobileNav() {
         </ul>
         <p className="mobile-menu-cta">
           <a className="btn btn-primary" href="#join" data-role="learner" data-cta-event="join" data-cta-location="menu" onClick={() => setOpen(false)}>
-            Get free access
+            {ctaLabel}
           </a>
+        </p>
+        <p className="mobile-menu-lang">
+          <LangSwitch />
         </p>
       </nav>
     </div>
