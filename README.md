@@ -14,8 +14,10 @@ See `.env.example`. Preview builds are never indexed and show proof placeholders
 `NEXT_PUBLIC_ALLOW_INDEXING=true` (launch only) allows indexing and removes every placeholder.
 
 ## Early-access form
-`POST /api/waitlist/` saves to the Supabase table `waitlist` when `SUPABASE_URL` and
-`SUPABASE_SERVICE_ROLE_KEY` are set (schema: `supabase/migrations/0001_waitlist.sql`).
+`POST /api/waitlist/` saves to the Supabase table `waitlist` (project `constructionlms`) when
+`SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` are set in Vercel. The key is public; Row Level
+Security lets it insert only (schema: `supabase/migrations/0001_waitlist.sql`).
+Read sign-ups in the Supabase dashboard: Table Editor > waitlist.
 Without them: local runs write `.data/waitlist.ndjson`; deployed builds refuse entries.
 
 ## Design tokens
